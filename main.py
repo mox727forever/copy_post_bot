@@ -79,4 +79,4 @@ async def repost_message(msg: aiogram.types.Message):
     await msg.send_copy(msg.chat.id, reply_to_message_id=msg.message_id, reply_markup=keyboard)
 
 
-aiogram.executor.start_polling(dp, skip_updates=True)
+aiogram.executor.start_polling(dp)
