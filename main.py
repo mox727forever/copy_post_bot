@@ -17,6 +17,7 @@ last_welcome_msg = []
 
 @dp.message_handler(lambda m: m.chat.id == int(os.environ.get("WISH_CHAT_ID")), content_types=aiogram.types.ContentType.NEW_CHAT_MEMBERS)
 async def start_cmd(msg: aiogram.types.Message):
+    print(msg)
     global last_welcome_msg
     try:
         await msg.delete()
