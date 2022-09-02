@@ -3,6 +3,7 @@ import os
 import random
 
 import aiogram
+from aiogram.dispatcher.middlewares import BaseMiddleware
 
 bot = aiogram.Bot(os.environ.get("BOT_API_KEY"))
 dp = aiogram.Dispatcher(bot)
@@ -15,9 +16,13 @@ welcome_sticks = ["CAACAgIAAx0CS-huPAABAsHIYxHYqCZhPxsMPibIuHYottixBmIAAh8hAAIRe
 last_welcome_msg = []
 
 
-@dp.message_handler(lambda m: m.chat.id == int(os.environ.get("WISH_CHAT_ID")), content_types=aiogram.types.ContentType.NEW_CHAT_MEMBERS)
+class TestMiddleware(BaseMiddleware):
+    async def on_process_message(self, message: aiogram.types.Message, _):
+        print(message)
+
+
+@dp.message_handler(lambda m: m.chat.id == int(os.environ.get("WISH_CHAT_ID")), content_types=aiogram.types.ContentTypes.NEW_CHAT_MEMBERS)
 async def start_cmd(msg: aiogram.types.Message):
-    print(msg)
     global last_welcome_msg
     try:
         await msg.delete()
@@ -80,4 +85,5 @@ async def repost_message(msg: aiogram.types.Message):
     await msg.send_copy(msg.chat.id, reply_to_message_id=msg.message_id, reply_markup=keyboard)
 
 
+dp.middleware.setup(TestMiddleware())
 aiogram.executor.start_polling(dp, skip_updates=True)
